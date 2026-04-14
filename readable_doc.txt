@@ -1,0 +1,438 @@
+ZohoAI Assistant
+Product Documentation
+Complete Feature &amp; Functionality Guide
+Version 1.0  |  Confidential
+Prepared for:
+Client &amp; Development Team
+Document Type: Product Requirements &amp; Feature Specification
+1. Executive Summary
+ZohoAI Assistant is a multi-tenant, AI-powered SaaS platform built specifically for the Zoho ecosystem. It acts as an intelligent command centre that sits on top of all Zoho applications — giving users, teams, and businesses a single place to ask questions, automate tasks, retrieve business insights, and get contextual help across every Zoho product they use.
+The Core Problem This Product Solves
+Zoho offers 55+ applications, each with its own interface, reports, and workflows. Even experienced Zoho users struggle to get a unified view of their business, automate cross-app tasks, or quickly learn how to use advanced Zoho features. Businesses lose hours every week to manual report pulling, repetitive data entry, and searching Zoho documentation. ZohoAI Assistant eliminates all of this.
+1.1 What Makes This Product Different
+Unlike Zoho&apos;s built-in Zia AI (which is siloed per app), ZohoAI Assistant is a unified intelligent layer that:
+Works across ALL Zoho apps from a single interface
+Understands the user&apos;s actual business data — not just generic Zoho help
+Supports team collaboration through a structured multi-tenant architecture
+Provides proactive intelligence — alerts, anomalies, and recommendations — without the user asking
+Is available to any Zoho user globally as a standalone SaaS subscription
+1.2 Key Value Propositions
+Feature
+Description
+Save Time
+Automate repetitive Zoho tasks and get instant answers instead of navigating multiple apps
+Business Intelligence
+Get a real-time, plain-English snapshot of your business health across all Zoho data
+Team Efficiency
+Empower every team member with AI assistance without needing Zoho expertise
+Zero Learning Curve
+Ask anything in natural language — no need to know where features are in Zoho
+Unified Dashboard
+See CRM, Books, Projects, Desk, HR, and more — all in one intelligent view
+2. Multi-Tenant Architecture
+ZohoAI Assistant is built as a true multi-tenant SaaS platform with three distinct tiers of users. Each tier has clearly defined roles, permissions, and capabilities. This architecture ensures that every business&apos;s data remains isolated, secure, and private while the platform operator (Super Admin) retains full control over the overall system.
+Tier 1 — Super Admin (Platform Owner)
+The Super Admin is the person (or team) who owns and operates the ZohoAI Assistant platform. This is you — the client. The Super Admin manages the entire platform from a dedicated administrative console that is completely separate from what customers see.
+Super Admin Capabilities
+  ✓  Manage all Business Admin accounts — create, suspend, delete, or upgrade
+  ✓  View platform-wide analytics: total users, active sessions, API usage, revenue metrics
+  ✓  Set and manage subscription plans (Free, Starter, Pro, Enterprise tiers)
+  ✓  Configure global AI model settings, rate limits, and feature flags
+  ✓  Access all system logs, audit trails, and error reports
+  ✓  Manage billing, invoices, and payment gateway integration
+  ✓  Send platform-wide announcements and notifications to all users
+  ✓  Configure which Zoho apps are available per subscription plan
+  ✓  Manage API key pool for Zoho OAuth and AI model connections
+  ✓  Set data retention and compliance policies
+  ✓  View and export platform-level reports and revenue dashboards
+  ✓  Handle support escalations from Business Admins
+Tier 2 — Business Admin (Customer / Subscriber)
+The Business Admin is a paying customer who subscribes to ZohoAI Assistant for their business. They connect their Zoho account(s) to the platform, configure their workspace, and manage their own team members. Each Business Admin operates within a fully isolated tenant — they can only see their own data, their own team, and their own Zoho connections.
+Business Admin Capabilities
+  ✓  Connect and manage all Zoho apps via OAuth (CRM, Books, Desk, HR, Projects, etc.)
+  ✓  Invite, manage, and remove Team Members from their workspace
+  ✓  Assign roles and control what each Team Member can access or do
+  ✓  Access the full AI Assistant for natural language queries and task automation
+  ✓  View the Business Intelligence Dashboard — their Zoho data in one place
+  ✓  Configure AI personas and custom instructions for their business context
+  ✓  Set up automated reports and scheduled AI summaries
+  ✓  View their own usage statistics, AI token consumption, and audit logs
+  ✓  Manage workspace-level settings, branding, and preferences
+  ✓  Create and manage AI workflow automations across Zoho apps
+  ✓  Configure notification rules and proactive alert thresholds
+  ✓  Manage subscription, billing details, and plan upgrades
+  ✓  Create and save reusable AI prompts and report templates
+Tier 3 — Team Member (End User)
+Team Members are employees or collaborators who are invited into a Business Admin&apos;s workspace. Their capabilities are controlled entirely by the Business Admin. Team Members use ZohoAI Assistant to get work done faster — they do not have access to billing, workspace settings, or admin functions.
+Team Member Capabilities
+  ✓  Use the AI Chat Assistant for Zoho-related questions and tasks
+  ✓  Access the modules and Zoho apps permitted by their Business Admin
+  ✓  View business insights and dashboards shared with them by the Business Admin
+  ✓  Run pre-approved AI automations and workflows
+  ✓  Create and view reports within their permitted scope
+  ✓  Receive proactive alerts and notifications configured for their role
+  ✓  Use saved prompts and report templates created by the Business Admin
+  ✓  Access Zoho documentation help and guided tutorials via AI
+  ✓  Log activities and view their own usage history
+3. Zoho App Integrations
+ZohoAI Assistant integrates with the full Zoho ecosystem using Zoho&apos;s official OAuth 2.0 API. Business Admins connect their Zoho organisation once through a secure OAuth consent screen. The platform then accesses only the apps and data the user has granted permission for. All integrations are read and write capable — meaning the AI can both retrieve data and perform actions in Zoho on the user&apos;s behalf.
+Integration Method
+All Zoho integrations use Zoho&apos;s official REST APIs with OAuth 2.0 token-based authentication. No passwords are ever stored. Tokens are encrypted at rest and rotated automatically. Users can revoke access at any time from within ZohoAI Assistant or directly from their Zoho account.
+3.1 Supported Zoho Applications
+Zoho App
+Data &amp; Capabilities Accessible
+Zoho CRM
+Leads, contacts, deals, pipelines, activities, forecasts, reports
+Zoho Books
+Invoices, expenses, payments, P&amp;L, balance sheet, tax reports, vendors
+Zoho Desk
+Tickets, agents, SLA performance, customer satisfaction, response times
+Zoho Projects
+Tasks, milestones, timesheets, project health, team workload
+Zoho People (HR)
+Employees, attendance, leave, payroll summaries, org chart
+Zoho Analytics
+Custom reports, dashboards, KPI widgets, cross-app analysis
+Zoho Mail
+Email summaries, follow-up reminders, template suggestions
+Zoho Cliq
+Team communication context, notification routing
+Zoho Inventory
+Stock levels, purchase orders, sales orders, warehouses
+Zoho Campaigns
+Email campaign performance, open rates, subscriber stats
+Zoho Sign
+Document status, pending signatures, completed contracts
+Zoho Creator
+Custom app data access, form submissions, workflow triggers
+Zoho Social
+Social media performance, scheduled posts, engagement stats
+Zoho Recruit
+Job openings, candidates, interview pipeline, hiring metrics
+Zoho Subscriptions
+Subscription metrics, MRR, churn, dunning management
+Zoho Commerce
+Online store orders, products, customers, revenue
+Zoho Marketing Automation
+Lead journeys, automation performance, conversion funnels
+Zoho Forms
+Form submissions, response analytics, data collection
+Zoho Survey
+Survey results, response rates, NPS scores
+Zoho Meeting
+Scheduled meetings, attendance, recording summaries
+3.2 How Integration Works for Users
+From the Business Admin&apos;s perspective, connecting Zoho apps is a simple 3-step process:
+Step 1 — Connect: 
+Business Admin clicks &apos;Connect Zoho&apos; in the Integrations section and is redirected to Zoho&apos;s secure login page. They log in with their Zoho credentials and grant the requested permissions.
+Step 2 — Select Apps: 
+After connecting, the platform displays all Zoho apps in the user&apos;s Zoho organisation. The Business Admin selects which apps to enable for ZohoAI Assistant. They can enable or disable apps at any time.
+Step 3 — Instant Access: 
+Once connected, ZohoAI Assistant immediately begins indexing the structure of the enabled apps (field names, module names, pipeline stages, etc.). The AI is now context-aware and can answer questions about the user&apos;s specific Zoho setup.
+4. Core Modules &amp; Features
+ZohoAI Assistant is organised into six core modules. Each module serves a distinct purpose and together they form a complete AI-powered workspace for Zoho users.
+4.1 AI Chat Assistant
+The AI Chat Assistant is the primary interface of ZohoAI Assistant. It is a conversational AI that users can talk to in plain English (or any language) to get help with anything Zoho-related.
+What Users Can Do
+Ask questions about their own Zoho data: &apos;How many open deals do I have?&apos;, &apos;What is my total revenue this month?&apos;
+Perform Zoho actions via voice command: &apos;Create a new lead for John Smith from ABC Corp&apos;, &apos;Mark invoice #1042 as paid&apos;
+Get step-by-step guidance for any Zoho task: &apos;How do I set up a workflow automation in Zoho CRM?&apos;
+Generate drafts and content: &apos;Write a follow-up email for my lead Sarah Johnson&apos;, &apos;Draft a payment reminder for this invoice&apos;
+Summarise information: &apos;Give me a summary of all tickets opened this week&apos;, &apos;Summarise my sales pipeline&apos;
+Get explanations of Zoho features: &apos;What is the difference between a Lead and a Contact in Zoho CRM?&apos;
+Perform complex cross-app queries: &apos;Show me all clients who have open invoices AND unresolved support tickets&apos;
+Key AI Chat Features
+Feature
+Description
+Conversation Memory
+The AI remembers context within a session so users don&apos;t repeat themselves
+Saved Conversations
+Users can save and revisit past conversations for reference
+Prompt Templates
+Pre-built and custom prompt templates for common Zoho tasks
+Multi-language Support
+Works in English, Hindi, and other major languages
+File Attachments
+Users can upload documents or CSVs and ask AI to analyse them in Zoho context
+Voice Input
+Users can speak their questions using browser microphone support
+Suggested Follow-ups
+The AI proactively suggests follow-up questions after each response
+Action Confirmation
+Before writing data back to Zoho, the AI shows a preview and asks for confirmation
+4.2 Business Intelligence Dashboard
+The Business Intelligence Dashboard gives Business Admins and Team Members a real-time, unified view of their business health — pulled from all connected Zoho apps and displayed in one clear, AI-curated interface.
+Dashboard Modules
+Feature
+Description
+Business Health Score
+An AI-computed score (0–100) summarising overall business performance across all Zoho data
+Revenue Overview
+Total revenue, invoiced amount, collected, outstanding — from Zoho Books, real-time
+Sales Pipeline Summary
+Open deals by stage, total pipeline value, expected close dates — from Zoho CRM
+Customer Support Health
+Open tickets, average response time, SLA breaches, CSAT score — from Zoho Desk
+Project Status Summary
+Active projects, overdue tasks, resource utilisation — from Zoho Projects
+HR Overview
+Headcount, attendance summary, pending leave requests — from Zoho People
+Marketing Performance
+Campaign open rates, lead generation trends — from Zoho Campaigns
+Inventory Alerts
+Low stock items, pending purchase orders — from Zoho Inventory
+Cash Flow Projection
+30/60/90-day cash flow forecast based on Zoho Books data
+Top Customers
+Ranked list of top customers by revenue, deal count, or support load
+Every widget on the dashboard is interactive — users can click any metric to drill down into the underlying data, and they can ask the AI follow-up questions directly from the dashboard context. The dashboard auto-refreshes every 15 minutes and can be configured to refresh more frequently on higher plans.
+AI-Generated Daily Briefing
+Every morning, the platform generates a personalised AI briefing for each user. The briefing includes:
+A 3-sentence summary of the previous day&apos;s key business events
+Today&apos;s most important tasks and deadlines across all Zoho apps
+Any anomalies or risks detected (e.g. a deal that hasn&apos;t been updated in 14 days)
+Revenue milestones reached or at risk
+Suggested priority actions for the day
+4.3 AI Workflow Automation
+The Automation module allows users to create intelligent, multi-step workflows that connect actions across different Zoho apps — powered by AI and triggered by conditions, schedules, or events.
+Types of Automations
+Feature
+Description
+Trigger-based
+Run automatically when something happens in Zoho (new lead, invoice overdue, ticket opened)
+Schedule-based
+Run at defined intervals — daily, weekly, monthly, or custom cron schedules
+AI-triggered
+The AI detects a pattern or anomaly and triggers a workflow automatically
+Manual
+User runs a workflow on demand from the interface or via chat command
+Example Automations
+When a new lead is added in Zoho CRM → AI scores the lead → sends a personalised welcome email via Zoho Mail → creates a follow-up task in Zoho Projects
+Every Monday at 9am → Generate a weekly revenue and pipeline summary → send it to the Business Admin&apos;s email and Zoho Cliq channel
+When a support ticket has been open for more than 48 hours with no response → escalate it to the senior agent and notify the Business Admin
+When an invoice becomes 30 days overdue → AI drafts a polite payment reminder → sends it to the customer via Zoho Books
+When inventory for a product drops below reorder level → create a purchase order draft in Zoho Inventory → notify the procurement team
+4.4 Proactive Alerts &amp; Anomaly Detection
+The platform continuously monitors all connected Zoho data in the background and proactively notifies users of important events, risks, and opportunities — without the user having to ask.
+Feature
+Description
+Revenue Anomaly
+Detects unusual drops or spikes in revenue compared to historical averages
+Deal at Risk
+Flags CRM deals that have gone stale (no activity beyond a configurable threshold)
+SLA Breach Warning
+Alerts before a support ticket is about to breach its SLA deadline
+Overdue Invoice Alert
+Notifies when customer invoices cross 30/60/90 day overdue thresholds
+Expense Spike
+Flags when expenses in a category exceed normal ranges
+Pipeline Milestone
+Celebrates when the sales pipeline reaches a new milestone value
+Low Inventory
+Alerts when stock falls below the user-defined reorder level
+Task Overdue
+Reminds team members about overdue project tasks
+Team Inactivity
+Notifies Business Admin when a team member has not logged in for N days
+Goal Progress
+Weekly progress update toward revenue or sales targets set by Business Admin
+Alert delivery channels include: in-app notification centre, email, Zoho Cliq (if connected), and browser push notifications. Business Admins can configure the sensitivity and delivery method for each alert type.
+4.5 Zoho Knowledge &amp; Help Engine
+ZohoAI Assistant includes a comprehensive, always up-to-date AI knowledge engine built specifically around the entire Zoho product ecosystem. This is not a generic chatbot — it has deep knowledge of every Zoho application&apos;s features, settings, workflows, and best practices.
+What the Knowledge Engine Covers
+Step-by-step tutorials for any Zoho feature or setting
+Zoho best practices for CRM pipeline setup, Books configuration, Desk workflows, and more
+Troubleshooting guides for common Zoho problems and error messages
+Zoho pricing and plan comparisons when users ask what a feature is available on
+API and developer documentation help for technical users
+Zoho update changelog — the AI is updated when Zoho releases major feature changes
+Industry-specific Zoho setup guides (e.g. Zoho CRM for real estate, Zoho Books for freelancers)
+4.6 Reports &amp; Analytics
+The Reports module allows users to generate, schedule, and export reports that pull data from one or more connected Zoho apps and present them in a clear, formatted layout.
+Report Types
+Feature
+Description
+AI-Generated Reports
+User describes what they want in plain English; AI generates the report automatically
+Template Reports
+Pre-built report templates for common business reports (monthly P&amp;L, pipeline report, support summary)
+Custom Reports
+Drag-and-drop report builder for non-technical users to create custom layouts
+Cross-App Reports
+Reports that combine data from multiple Zoho apps (e.g. CRM + Books customer report)
+Scheduled Reports
+Automatically generate and email reports on a daily, weekly, or monthly basis
+Shareable Reports
+Generate a secure link to share a report with someone outside the platform
+Export Options
+Export any report as PDF, Excel, or CSV with one click
+5. How the Application Works — User Journeys
+5.1 Super Admin Journey
+The Super Admin manages the platform from a dedicated admin panel. Here is a typical day in the Super Admin&apos;s workflow:
+Logs into the Super Admin console (separate URL/subdomain from customer-facing app)
+Reviews the platform dashboard: new sign-ups today, active sessions, API usage, and system health
+Approves or reviews new Business Admin registrations (if manual approval is enabled)
+Checks revenue metrics: MRR, churn, plan distribution, trial conversions
+Manages a support escalation from a Business Admin who is having trouble connecting Zoho
+Releases a new feature update and sends a platform-wide announcement to all users
+Reviews AI usage logs and adjusts model rate limits for the current month
+5.2 Business Admin Journey — First Time Setup
+When a Business Admin signs up for the first time:
+Registers on the platform with their business email, business name, and selects a subscription plan
+Verifies their email and completes their business profile (industry, team size, primary Zoho apps used)
+Clicks &apos;Connect Zoho&apos; and completes OAuth authentication with their Zoho account
+Selects which Zoho apps to enable for ZohoAI Assistant
+The AI onboarding wizard asks 5–7 questions to understand their business context (e.g. &apos;What is your primary sales process?&apos;, &apos;Do you track projects in Zoho Projects?&apos;)
+The platform generates a personalised Business Intelligence Dashboard based on their connected Zoho data
+The Business Admin invites their team members by email and assigns roles
+Done — the workspace is ready to use
+5.3 Business Admin Journey — Daily Use
+Logs in and reviews the AI Daily Briefing (&apos;3 deals are stale, 2 invoices are overdue, your revenue is 12% above last week&apos;)
+Asks the AI: &apos;Who are my top 5 customers by revenue this quarter?&apos; — gets an instant table from Zoho Books + CRM data
+Asks AI to create a follow-up task in Zoho Projects for a customer mentioned in a Zoho Desk ticket
+Runs an automated Monday morning pipeline report that gets sent to the team via Zoho Cliq
+Checks the Proactive Alerts panel and sees that an invoice for a major client is 30 days overdue — clicks &apos;Send Reminder&apos; and the AI drafts and sends the email
+Generates a monthly P&amp;L summary for their accountant and exports it as a PDF
+5.4 Team Member Journey — Daily Use
+Logs into ZohoAI Assistant (only sees modules their Business Admin has enabled for them)
+Opens the AI Chat and asks: &apos;What are my assigned tasks due this week in Zoho Projects?&apos;
+Gets a notification that a support ticket they are responsible for is at risk of breaching SLA — clicks through to Zoho Desk directly
+Asks the AI to draft a reply to a customer ticket based on the ticket history and product details
+Uses the AI to look up how to apply a discount to an invoice in Zoho Books
+Views a shared dashboard their Business Admin has set up for their department
+6. Subscription Plans
+ZohoAI Assistant is offered as a monthly or annual subscription. Plans are priced per workspace (Business Admin) with included Team Member seats. Additional seats can be purchased as add-ons.
+Plan
+Seats Included
+Key Features
+Starter
+1 Business Admin + up to 3 Team Members
+Connect up to 5 Zoho Apps, AI Chat (limited), Basic Dashboard
+Professional
+1 Business Admin + up to 10 Team Members
+All Zoho Apps, Full AI Chat, Business Intelligence Dashboard, Automations, Alerts
+Business
+1 Business Admin + up to 25 Team Members
+Everything in Pro + Custom Reports, Scheduled Reports, Priority Support
+Enterprise
+1 Business Admin + Unlimited Team Members
+Everything in Business + Dedicated Onboarding, SLA, Custom AI Instructions, API Access
+The Super Admin has full control over plan definitions, pricing, feature flags per plan, and promotional coupon codes from the admin console.
+7. Security, Privacy &amp; Compliance
+Data Isolation
+Every Business Admin&apos;s data is completely isolated from all other tenants. There is no possibility of one Business Admin accessing another&apos;s Zoho data, team members, conversations, or reports. Isolation is enforced at the database level using tenant-scoped partitioning.
+7.1 Security Features
+Feature
+Description
+OAuth 2.0 Authentication
+No Zoho passwords are stored — only short-lived, encrypted OAuth tokens
+Data Encryption
+All data encrypted at rest (AES-256) and in transit (TLS 1.3)
+Multi-Factor Authentication
+MFA support for all user tiers via authenticator apps or SMS
+Role-Based Access Control
+Granular permissions ensure users only see and do what they are allowed to
+Audit Logs
+Full audit trail of every action taken — who did what, when, from which IP
+Session Management
+Configurable session timeouts and ability to revoke active sessions
+IP Whitelisting
+Business Admins on Enterprise plan can restrict access to specific IP ranges
+GDPR Compliance
+Data deletion, data export, and processing consent management built in
+SOC 2 Ready Architecture
+Infrastructure designed to meet SOC 2 Type II controls
+Token Revocation
+Users can disconnect Zoho and revoke all access tokens instantly from within the app
+7.2 What Data Is Stored
+ZohoAI Assistant takes a minimal data storage approach. It does not replicate or store bulk Zoho data. Instead:
+Zoho data is fetched in real-time via API when a user makes a query or opens a dashboard
+Only metadata (field names, module names, pipeline stages) is cached locally to improve AI response speed
+Conversation history is stored and associated with the user&apos;s account — users can delete it at any time
+Report outputs are temporarily cached for performance and deleted after 24 hours unless the user explicitly saves them
+No customer PII from Zoho is permanently stored on ZohoAI Assistant servers
+8. Technical Overview
+This section provides a high-level overview of the application&apos;s technical architecture for the development team.
+8.1 Technology Stack (Recommended)
+Feature
+Description
+Frontend
+React.js / Next.js — Server-side rendered web application with responsive mobile support
+Backend API
+Node.js (Express) or Python (FastAPI) — RESTful API with WebSocket support for real-time chat
+AI Engine
+Anthropic Claude API (primary) — for conversational AI, data interpretation, and content generation
+Database
+PostgreSQL — multi-tenant schema with row-level security; Redis for caching and sessions
+File Storage
+AWS S3 or Cloudflare R2 — for report exports, document attachments
+Authentication
+JWT tokens + OAuth 2.0 (Zoho) — with optional SSO (Google, Microsoft)
+Zoho API Layer
+Dedicated microservice managing Zoho API calls, token refresh, rate limiting, and retry logic
+Job Queue
+Bull (Redis-based) — for scheduled reports, automation workflows, and background AI tasks
+Hosting
+AWS / GCP / Azure — containerised with Docker, orchestrated with Kubernetes
+Email Service
+SendGrid or AWS SES — for transactional emails, report delivery, and alert notifications
+Monitoring
+Datadog or Sentry — for error tracking, performance monitoring, and uptime alerts
+8.2 Multi-Tenancy Implementation
+The platform uses a shared database, isolated schema approach for multi-tenancy. Every database record is tagged with a tenant_id that corresponds to the Business Admin&apos;s organisation. All API routes validate the tenant_id from the authenticated JWT before executing any query, making data leakage architecturally impossible.
+8.3 Zoho API Integration Architecture
+A dedicated Zoho API service handles all communication with Zoho&apos;s REST APIs. This service manages OAuth token storage (encrypted), automatic token refresh before expiry, per-tenant API rate limit tracking, intelligent request queuing and retry logic, and response caching for frequently accessed metadata.
+8.4 AI Architecture
+The AI system is built in two layers. The Conversation Layer handles user messages, maintains session context, injects relevant Zoho metadata and live data into the AI prompt, and returns structured responses. The Action Layer handles cases where the AI needs to write data back to Zoho — it extracts intent, prepares an action plan, presents a confirmation to the user, and executes the Zoho API call upon confirmation.
+9. Development Roadmap
+Phase 1 — MVP (Months 1–3)
+Multi-tenant user system (Super Admin, Business Admin, Team Member roles)
+Zoho OAuth integration for CRM, Books, and Desk
+AI Chat Assistant with natural language queries and data retrieval
+Basic Business Intelligence Dashboard (5 core widgets)
+Proactive Alerts (5 alert types)
+Subscription management and billing (Stripe integration)
+Email notifications
+Phase 2 — Growth (Months 4–6)
+Expand Zoho integrations to all 20 apps listed in Section 3
+Full AI Workflow Automation module
+Reports &amp; Analytics module with scheduling
+Team Member permission configuration
+Mobile-responsive UI improvements
+Advanced dashboard with custom widget configuration
+AI Daily Briefing feature
+Phase 3 — Scale (Months 7–12)
+Mobile app (iOS and Android) — React Native
+White-label option for agency partners (sub-reseller model)
+Enterprise SSO (SAML 2.0)
+Advanced anomaly detection with ML-based models
+Zoho Creator and custom app support
+Public API for Business Admins to build custom integrations
+AI-powered onboarding assistant for new Zoho users
+10. Glossary
+Feature
+Description
+Super Admin
+The platform owner — controls the entire ZohoAI Assistant SaaS platform
+Business Admin
+A paying customer with their own isolated workspace and Zoho connection
+Team Member
+An employee invited into a Business Admin&apos;s workspace with scoped access
+Tenant
+One isolated Business Admin workspace — all their data, team, and Zoho connections
+OAuth 2.0
+Industry-standard secure authentication protocol used to connect Zoho accounts
+AI Briefing
+A daily AI-generated summary of key business events and recommended priorities
+Automation
+A configured multi-step workflow that runs automatically based on triggers or schedules
+Proactive Alert
+A system-generated notification when the AI detects an event or anomaly worth flagging
+Business Health Score
+An AI-computed composite metric (0–100) summarising overall business performance
+Cross-App Query
+A data query that pulls and combines information from two or more Zoho apps
+Prompt Template
+A reusable pre-written AI instruction that Business Admins can create and share with their team
+End of Document
+ZohoAI Assistant — Product Documentation v1.0 — Confidential
