@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useTheme } from "./ThemeProvider";
+import { Bell } from "lucide-react";
 
 export default function BAdminSidebar() {
   const router = useRouter();
@@ -15,6 +16,9 @@ export default function BAdminSidebar() {
           <div className="logo-icon">Z</div>
           <span className="logo-text">ZohoAI</span>
         </Link>
+        <button className={`alert-button ${pathname === '/Pages/BAdmin/Alerts' ? 'active' : ''}`} onClick={() => router.push("/Pages/BAdmin/Alerts")}>
+          <Bell size={18} />
+        </button>
       </div>
 
       <div className="workspace-block">
@@ -57,12 +61,12 @@ export default function BAdminSidebar() {
               </svg>
               Reports
             </button>
-            <button onClick={() => router.push('/Pages/BAdmin/Alerts')} className={`nav-item ${pathname === '/Pages/BAdmin/Alerts' ? 'active' : ''}`}>
+            {/* <button onClick={() => router.push('/Pages/BAdmin/Alerts')} className={`nav-item ${pathname === '/Pages/BAdmin/Alerts' ? 'active' : ''}`}>
               <svg className="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
               </svg>
               Alerts
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -170,6 +174,32 @@ export default function BAdminSidebar() {
           font-weight: 600;
           color: white;
           letter-spacing: 0.5px;
+        }
+
+        .alert-button {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 34px;
+          height: 34px;
+          background: transparent;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          border-radius: 8px;
+          color: rgba(255, 255, 255, 0.6);
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .alert-button:hover {
+          background: rgba(255, 255, 255, 0.04);
+          border-color: rgba(255, 255, 255, 0.2);
+          color: white;
+        }
+
+        .alert-button.active {
+          background: rgba(184, 132, 42, 0.1);
+          border-color: rgba(184, 132, 42, 0.2);
+          color: white;
         }
 
         .workspace-block {
