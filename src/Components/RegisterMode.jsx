@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-export default function RegisterMode({ isOpen, onClose, onSwitchToLogin }) {
+export default function RegisterMode({ isOpen, onClose, onSwitchToLogin, onRegisterSuccess }) {
   const router = useRouter();
   const [formData, setFormData] = useState({
     fullName: "",
@@ -34,9 +34,8 @@ export default function RegisterMode({ isOpen, onClose, onSwitchToLogin }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Registration attempt:", formData);
-    // Redirect to onboarding after successful registration mockup
-    onClose();
-    router.push("/auth/onboarding");
+    // Trigger successful registration flow
+    onRegisterSuccess();
   };
 
   if (!isMounted || !isOpen) return null;

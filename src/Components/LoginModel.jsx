@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 
-export default function LoginModel({ isOpen, onClose, onSwitchToRegister, onSwitchToForgot }) {
+export default function LoginModel({ isOpen, onClose, onSwitchToRegister, onSwitchToForgot, onLoginSuccess }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -24,7 +23,7 @@ export default function LoginModel({ isOpen, onClose, onSwitchToRegister, onSwit
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Login attempt:", { email, password });
-    // Mock login success logic here if needed
+    onLoginSuccess();
   };
 
   if (!isMounted || !isOpen) return null;

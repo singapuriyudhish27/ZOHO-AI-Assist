@@ -7,6 +7,7 @@ import { useTheme } from "@/Components/ThemeProvider";
 import RegisterMode from "@/Components/RegisterMode";
 import LoginModel from "@/Components/LoginModel";
 import ForgotPasswordModel from "@/Components/ForgotPasswordModel";
+import OnboardingModal from "@/Components/OnBoardingMode";
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
@@ -18,7 +19,15 @@ export default function LandingPage() {
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isOnboardingModalOpen, setIsOnboardingModalOpen] = useState(false);
   const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setIsOnboardingModalOpen(true);
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     setMounted(true);
@@ -766,6 +775,10 @@ export default function LandingPage() {
           setIsRegisterModalOpen(false);
           setIsLoginModalOpen(true);
         }}
+        onRegisterSuccess={() => {
+          setIsRegisterModalOpen(false);
+          setIsLoggedIn(true);
+        }}
       />
 
       <LoginModel 
@@ -779,6 +792,10 @@ export default function LandingPage() {
           setIsLoginModalOpen(false);
           setIsForgotModalOpen(true);
         }}
+        onLoginSuccess={() => {
+          setIsLoginModalOpen(false);
+          setIsLoggedIn(true);
+        }}
       />
 
       <ForgotPasswordModel 
@@ -788,6 +805,11 @@ export default function LandingPage() {
           setIsForgotModalOpen(false);
           setIsLoginModalOpen(true);
         }}
+      />
+
+      <OnboardingModal 
+        open={isOnboardingModalOpen} 
+        setOpen={setIsOnboardingModalOpen} 
       />
     </>
   );
