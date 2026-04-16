@@ -13,6 +13,8 @@ const steps = [
   "Plan",
 ];
 
+const STORAGE_KEY = "zoho_onboarding_state";
+
 export default function OnboardingModal({ open, setOpen }) {
   const router = useRouter();
   const [step, setStep] = useState(0);
@@ -22,6 +24,18 @@ export default function OnboardingModal({ open, setOpen }) {
   const [invitedMembers, setInvitedMembers] = useState([]);
   const [connectedApps, setConnectedApps] = useState([]);
   const [isPlanConfirmed, setIsPlanConfirmed] = useState(false);
+  const [pendingToast, setPendingToast] = useState(null);
+  
+  const saveState = () => {
+    const stateData = {
+      step,
+      selectedGoals,
+      invitedMembers,
+      connectedApps,
+      selectedPlan
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(stateData));
+  };
 
   const progress = ((step + 1) / steps.length) * 100;
 
@@ -77,7 +91,66 @@ export default function OnboardingModal({ open, setOpen }) {
 
   useEffect(() => {
     setIsMounted(true);
-  }, []);
+    
+    // Check for restoration after OAuth redirect
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("onboarding") === "zoho_success") {
+      const savedState = localStorage.getItem(STORAGE_KEY);
+      if (savedState) {
+        try {
+          const { 
+            step: savedStep, 
+            selectedGoals: savedGoals, 
+            invitedMembers: savedMembers, 
+            connectedApps: savedApps, 
+            selectedPlan: savedPlan 
+          } = JSON.parse(savedState);
+          
+          setStep(savedStep || 1);
+          setSelectedGoals(savedGoals || []);
+          setInvitedMembers(savedMembers || []);
+          setSelectedPlan(savedPlan || "");
+          
+          // Add the newly connected app(s)
+          const newApp = params.get("app");
+          if (newApp === "all") {
+             setConnectedApps(["Zoho CRM", "Zoho Books", "Zoho Desk", "Zoho Projects"]);
+          } else if (newApp && !savedApps.includes(newApp)) {
+            setConnectedApps([...(savedApps || []), newApp]);
+          } else {
+            setConnectedApps(savedApps || []);
+          }
+
+          setOpen(true);
+
+          // Store the success message to show once the modal is open & ToastContainer is mounted
+          const appParam = params.get("app");
+          const successMsg = appParam === "all"
+            ? "Successfully connected all Zoho apps!"
+            : `Successfully connected ${appParam}!`;
+          setPendingToast(successMsg);
+          
+          // Cleanup
+          localStorage.removeItem(STORAGE_KEY);
+          const newUrl = window.location.pathname;
+          window.history.replaceState({}, document.title, newUrl);
+        } catch (e) {
+          console.error("Failed to restore onboarding state:", e);
+        }
+      }
+    }
+  }, [setOpen]);
+
+  // Fire the toast once the modal is open and ToastContainer is mounted
+  useEffect(() => {
+    if (open && pendingToast) {
+      const timer = setTimeout(() => {
+        toast.success(pendingToast);
+        setPendingToast(null);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [open, pendingToast]);
 
   useEffect(() => {
     if (open) {
@@ -124,7 +197,12 @@ export default function OnboardingModal({ open, setOpen }) {
           {step === 1 && (
             <IntegrationsStep 
               connectedApps={connectedApps} 
-              setConnectedApps={setConnectedApps} 
+              setConnectedApps={setConnectedApps}
+              saveState={saveState}
+              step={step}
+              selectedGoals={selectedGoals}
+              invitedMembers={invitedMembers}
+              selectedPlan={selectedPlan}
             />
           )}
           {step === 2 && (
@@ -594,35 +672,94 @@ function GoalsStep({ selectedGoals, setSelectedGoals }) {
   );
 }
 
-function IntegrationsStep({ connectedApps, setConnectedApps }) {
+function IntegrationsStep({ 
+  connectedApps, 
+  setConnectedApps, 
+  saveState, 
+  step, 
+  selectedGoals, 
+  invitedMembers, 
+  selectedPlan 
+}) {
   const apps = [
-    { name: "Zoho CRM", icon: "🔴" },
-    { name: "Zoho Books", icon: "🔵" },
-    { name: "Zoho Desk", icon: "🟢" },
-    { name: "Zoho Projects", icon: "🟡" }
+    { name: "Zoho CRM", icon: "🔴", scope: "ZohoCRM.modules.ALL" },
+    { name: "Zoho Books", icon: "🔵", scope: "ZohoBooks.fullaccess.all" },
+    { name: "Zoho Desk", icon: "🟢", scope: "Desk.tickets.ALL,Desk.contacts.ALL" },
+    { name: "Zoho Projects", icon: "🟡", scope: "ZohoProjects.projects.ALL" }
   ];
 
-  const handleConnect = (appName) => {
-    if (connectedApps.includes(appName)) return;
+  const handleConnect = (app) => {
+    if (connectedApps.includes(app.name)) return;
 
-    // Simulate connection delay
-    toast.info(`Connecting to ${appName}...`, { autoClose: 1000, hideProgressBar: true });
+    saveState();
 
+    const clientId = process.env.NEXT_PUBLIC_ZOHO_CLIENT_ID;
+    const redirectUri = process.env.NEXT_PUBLIC_ZOHO_REDIRECT_URI;
+    
+    if (!clientId) {
+      toast.error("Zoho Client ID is not configured. Please check your .env file.");
+      return;
+    }
+
+    const oauthUrl = `https://accounts.zoho.in/oauth/v2/auth?scope=${app.scope}&client_id=${clientId}&response_type=code&access_type=offline&redirect_uri=${redirectUri}&state=${encodeURIComponent(app.name)}`;
+    
+    toast.info(`Redirecting to Zoho to connect ${app.name}...`, { autoClose: 2000 });
+    
+    // Redirect to Zoho OAuth with a slight delay so user can see the toast
     setTimeout(() => {
-      setConnectedApps([...connectedApps, appName]);
-      toast.success(`Successfully connected to ${appName}!`, {
-        position: "bottom-right",
-        autoClose: 2000,
-        hideProgressBar: true,
-        style: { fontSize: '13px', minHeight: '48px', width: '320px' }
-      });
-    }, 1200);
+      window.location.href = oauthUrl;
+    }, 2000);
+    
+    // Redirect handled above
+  };
+
+  const handleConnectAll = () => {
+    const allScopes = apps.map(app => app.scope).join(",");
+    saveState();
+    
+    const clientId = process.env.NEXT_PUBLIC_ZOHO_CLIENT_ID;
+    const redirectUri = process.env.NEXT_PUBLIC_ZOHO_REDIRECT_URI;
+
+    if (!clientId) {
+      toast.error("Zoho Client ID is not configured. Please check your .env file.");
+      return;
+    }
+
+    const oauthUrl = `https://accounts.zoho.in/oauth/v2/auth?scope=${allScopes}&client_id=${clientId}&response_type=code&access_type=offline&redirect_uri=${redirectUri}&state=all`;
+    
+    toast.info("Redirecting to Zoho to connect all apps...", { autoClose: 2000 });
+    
+    // Redirect to Zoho OAuth with a slight delay so user can see the toast
+    setTimeout(() => {
+      window.location.href = oauthUrl;
+    }, 2000);
   };
 
   return (
     <div>
-      <h3 className="step-title">Connect Your Apps</h3>
-      <p className="step-subtitle">Sync your data across the Zoho suite.</p>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "32px", padding: "0 4px" }}>
+        <div style={{ textAlign: "left" }}>
+          <h3 className="step-title" style={{ textAlign: "left", margin: 0 }}>Connect Your Apps</h3>
+          <p className="step-subtitle" style={{ textAlign: "left", margin: "4px 0 0" }}>Sync your data across the Zoho suite.</p>
+        </div>
+        <button 
+          className="btn-gold" 
+          style={{ 
+            width: "auto", 
+            padding: "10px 20px", 
+            fontSize: "13px", 
+            fontWeight: "600",
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            marginTop: "4px"
+          }}
+          onClick={handleConnectAll}
+        >
+          <span style={{ fontSize: "16px" }}>🚀</span>
+          Connect All
+        </button>
+      </div>
       {apps.map((app) => (
         <div key={app.name} className="integration-item">
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -631,7 +768,7 @@ function IntegrationsStep({ connectedApps, setConnectedApps }) {
           </div>
           <button 
             className={`btn-connect ${connectedApps.includes(app.name) ? "connected" : ""}`}
-            onClick={() => handleConnect(app.name)}
+            onClick={() => handleConnect(app)}
           >
             {connectedApps.includes(app.name) ? "✓ Connected" : "Connect"}
           </button>
