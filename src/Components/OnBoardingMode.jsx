@@ -222,6 +222,14 @@ export default function OnboardingModal({ open, setOpen }) {
             color: white;
           }
 
+          :global(.dark) .header {
+            border-bottom-color: rgba(255, 255, 255, 0.05);
+          }
+
+          :global(.dark) .progress-bar {
+            background: rgba(255, 255, 255, 0.05);
+          }
+
           .close-modal {
             position: absolute;
             top: 24px;
@@ -268,6 +276,10 @@ export default function OnboardingModal({ open, setOpen }) {
             color: white;
           }
 
+          :global(.dark) h2 {
+            color: white;
+          }
+
           .progress-bar {
             height: 8px;
             background: #f0f0f0;
@@ -290,6 +302,10 @@ export default function OnboardingModal({ open, setOpen }) {
             padding: 20px 40px 40px;
           }
 
+          :global(.dark) .body {
+            background: #1e1e22;
+          }
+
           .footer {
             padding: 24px 40px;
             margin-top: 5px;
@@ -301,6 +317,11 @@ export default function OnboardingModal({ open, setOpen }) {
             background: #fafafa;
           }
 
+          :global(.dark) .footer {
+            background: #19191c;
+            border-top-color: rgba(255, 255, 255, 0.05);
+          }
+
           .btn-back {
             padding: 12px 24px;
             border-radius: 12px;
@@ -310,6 +331,17 @@ export default function OnboardingModal({ open, setOpen }) {
             font-weight: 500;
             cursor: pointer;
             transition: all 0.2s;
+          }
+
+          :global(.dark) .btn-back {
+            background: transparent;
+            border-color: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+          }
+
+          :global(.dark) .btn-back:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
           }
 
           .btn-back:hover:not(:disabled) {
@@ -327,6 +359,15 @@ export default function OnboardingModal({ open, setOpen }) {
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          }
+
+          :global(.dark) .btn-next {
+            background: var(--gold);
+            color: white;
+          }
+
+          :global(.dark) .btn-next:hover:not(:disabled) {
+            background: var(--gold-light);
           }
 
           .btn-next:hover:not(:disabled) {
@@ -403,6 +444,23 @@ export default function OnboardingModal({ open, setOpen }) {
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
           }
 
+          :global(.dark) :global(.card) {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+          }
+
+          :global(.dark) :global(.card):hover {
+            border-color: var(--gold);
+            background: rgba(255, 255, 255, 0.05);
+          }
+
+          :global(.dark) :global(.card.active) {
+            background: var(--gold);
+            border-color: var(--gold);
+            color: white;
+          }
+
           :global(.step-title) {
             font-size: 26px;
             font-weight: 600;
@@ -410,6 +468,10 @@ export default function OnboardingModal({ open, setOpen }) {
             margin-bottom: 8px;
             font-family: var(--font-cormorant), serif;
             text-align: center;
+          }
+
+          :global(.dark) :global(.step-title) {
+            color: white;
           }
 
           :global(.step-subtitle) {
@@ -423,6 +485,10 @@ export default function OnboardingModal({ open, setOpen }) {
             line-height: 1.5;
           }
 
+          :global(.dark) :global(.step-subtitle) {
+            color: rgba(255, 255, 255, 0.5);
+          }
+
           :global(.integration-item) {
              display: flex;
              justify-content: space-between;
@@ -434,6 +500,12 @@ export default function OnboardingModal({ open, setOpen }) {
              border: 1px solid #eee;
           }
 
+          :global(.dark) :global(.integration-item) {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.08);
+            color: white;
+          }
+
           :global(.btn-connect) {
             padding: 8px 16px;
             border-radius: 8px;
@@ -442,6 +514,12 @@ export default function OnboardingModal({ open, setOpen }) {
             background: #fff;
             border: 1px solid #ddd;
             color: #111;
+          }
+
+          :global(.dark) :global(.btn-connect) {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+            color: white;
           }
 
           :global(.btn-connect.connected) {
@@ -637,11 +715,11 @@ function TeamStep({ invitedMembers, setInvitedMembers, connectedApps }) {
           justifyContent: "space-between", 
           alignItems: "center", 
           marginBottom: "32px", 
-          background: "#f8fafc", 
+          background: "var(--light-bg, #f8fafc)", 
           padding: "16px 24px", 
           borderRadius: "16px", 
-          border: "1px solid #e2e8f0" 
-        }}>
+          border: "1px solid var(--border-color, #e2e8f0)" 
+        }} className="team-header-box">
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             <div style={{ fontSize: "32px" }}>👥</div>
             <div>
@@ -706,32 +784,26 @@ function TeamStep({ invitedMembers, setInvitedMembers, connectedApps }) {
                   justifyContent: "space-between", 
                   alignItems: "center", 
                   padding: "12px 16px", 
-                  background: "#fff", 
+                  background: "var(--member-card-bg, #fff)", 
                   borderRadius: "10px",
-                  border: "1px solid #e2e8f0"
+                  border: "1px solid var(--member-card-border, #e2e8f0)"
                 }}
+                className="member-item"
               >
                 <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <span style={{ fontSize: "14px", fontWeight: "500", color: "#334155" }}>{member.email}</span>
-                    <span style={{ fontSize: "11px", fontWeight: "500", color: "#64748b", background: "#f1f5f9", padding: "2px 8px", borderRadius: "100px" }}>
+                    <span className="member-email">{member.email}</span>
+                    <span className="status-badge">
                       Sent
                     </span>
                   </div>
                   <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
                     {member.roles.length > 0 ? member.roles.map(role => (
-                      <span key={role} style={{ 
-                        fontSize: "10px", 
-                        background: "#fff7ed", 
-                        color: "#c2410c", 
-                        padding: "1px 6px", 
-                        borderRadius: "4px",
-                        border: "1px solid #ffedd5"
-                      }}>
+                      <span key={role} className="role-tag">
                         {role}
                       </span>
                     )) : (
-                      <span style={{ fontSize: "10px", color: "#94a3b8", fontStyle: "italic" }}>No ZOHO Apps assigned</span>
+                      <span className="no-roles-text">No ZOHO Apps assigned</span>
                     )}
                   </div>
                 </div>
@@ -739,16 +811,14 @@ function TeamStep({ invitedMembers, setInvitedMembers, connectedApps }) {
                 <div style={{ display: "flex", gap: "8px" }}>
                   <button 
                     onClick={() => openEdit(index)}
-                    style={{ background: "none", border: "1px solid #e2e8f0", cursor: "pointer", display: "flex", alignItems: "center", padding: "6px", color: "#64748b", borderRadius: "6px", transition: "all 0.2s" }}
-                    className="hover-bg"
+                    className="action-btn edit-btn"
                     title="Edit"
                   >
                     <Pencil size={14} />
                   </button>
                   <button 
                     onClick={() => handleDelete(index)}
-                    style={{ background: "none", border: "1px solid #fee2e2", cursor: "pointer", display: "flex", alignItems: "center", padding: "6px", color: "#ef4444", borderRadius: "6px", transition: "all 0.2s" }}
-                    className="hover-bg-red"
+                    className="action-btn delete-btn"
                     title="Delete"
                   >
                     <Trash2 size={14} />
@@ -796,14 +866,14 @@ function TeamStep({ invitedMembers, setInvitedMembers, connectedApps }) {
                     width: "100%",
                     padding: "12px",
                     borderRadius: "8px",
-                    border: "1px solid #ddd",
-                    background: "#fff",
+                    border: "1px solid var(--input-border, #ddd)",
+                    background: "var(--input-bg, #fff)",
                     cursor: "pointer",
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
                     fontSize: "14px",
-                    color: selectedRoles.length > 0 ? "#111" : "#94a3b8"
+                    color: selectedRoles.length > 0 ? "var(--dropdown-text, #111)" : "var(--dropdown-placeholder, #94a3b8)"
                   }}
                 >
                   <span>
@@ -825,30 +895,20 @@ function TeamStep({ invitedMembers, setInvitedMembers, connectedApps }) {
                     top: "100%",
                     left: 0,
                     right: 0,
-                    background: "#fff",
-                    border: "1px solid #ddd",
+                    background: "var(--dropdown-bg, #fff)",
+                    border: "1px solid var(--dropdown-border, #ddd)",
                     borderRadius: "8px",
                     marginTop: "4px",
                     boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
                     zIndex: 100,
                     padding: "8px"
-                  }}>
+                  }} className="role-dropdown-menu">
                     {availableRoles.length > 0 ? (
                       availableRoles.map(role => (
                         <div 
                           key={role}
                           onClick={() => toggleRole(role)}
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "10px",
-                            padding: "8px 12px",
-                            cursor: "pointer",
-                            borderRadius: "6px",
-                            background: selectedRoles.includes(role) ? "#fff7ed" : "transparent",
-                            transition: "all 0.1s"
-                          }}
-                          className="role-item-hover"
+                          className={`role-item ${selectedRoles.includes(role) ? "selected" : ""}`}
                         >
                           <input 
                             type="checkbox" 
@@ -856,11 +916,7 @@ function TeamStep({ invitedMembers, setInvitedMembers, connectedApps }) {
                             readOnly
                             style={{ cursor: "pointer" }}
                           />
-                          <span style={{ 
-                            fontSize: "14px", 
-                            fontWeight: selectedRoles.includes(role) ? "600" : "400",
-                            color: selectedRoles.includes(role) ? "#c2410c" : "#334155"
-                          }}>
+                          <span className="role-item-name">
                             {role}
                           </span>
                         </div>
@@ -903,6 +959,141 @@ function TeamStep({ invitedMembers, setInvitedMembers, connectedApps }) {
           box-shadow: 0 20px 40px rgba(0,0,0,0.15);
           animation: slideUp 0.3s ease-out;
         }
+
+        :global(.dark) .sub-modal {
+          background: #242428;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: white;
+        }
+
+        :global(.dark) .team-header-box {
+          background: rgba(255, 255, 255, 0.03) !important;
+          border-color: rgba(255, 255, 255, 0.08) !important;
+        }
+
+        :global(.dark) .member-item {
+          background: rgba(255, 255, 255, 0.02) !important;
+          border-color: rgba(255, 255, 255, 0.05) !important;
+        }
+        
+        .member-email {
+          font-size: 14px;
+          font-weight: 500;
+          color: #334155;
+        }
+
+        :global(.dark) .member-email {
+          color: rgba(255, 255, 255, 0.9);
+        }
+
+        .status-badge {
+          font-size: 11px;
+          font-weight: 500;
+          color: #64748b;
+          background: #f1f5f9;
+          padding: 2px 8px;
+          borderRadius: 100px;
+        }
+
+        :global(.dark) .status-badge {
+          background: rgba(255, 255, 255, 0.05);
+          color: rgba(255, 255, 255, 0.5);
+        }
+
+        .role-tag {
+          font-size: 10px;
+          background: #fff7ed;
+          color: #c2410c;
+          padding: 1px 6px;
+          border-radius: 4px;
+          border: 1px solid #ffedd5;
+        }
+
+        :global(.dark) .role-tag {
+          background: rgba(184, 132, 42, 0.1);
+          color: var(--gold-light);
+          border-color: rgba(184, 132, 42, 0.2);
+        }
+
+        .no-roles-text {
+          font-size: 10px;
+          color: #94a3b8;
+          font-style: italic;
+        }
+
+        :global(.dark) .no-roles-text {
+          color: rgba(255, 255, 255, 0.4);
+        }
+
+        .action-btn {
+          background: none;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          padding: 6px;
+          border-radius: 6px;
+          transition: all 0.2s;
+        }
+
+        .edit-btn {
+          border: 1px solid #e2e8f0;
+          color: #64748b;
+        }
+
+        .edit-btn:hover {
+          background: #f1f5f9;
+        }
+
+        .delete-btn {
+          border: 1px solid #fee2e2;
+          color: #ef4444;
+        }
+
+        .delete-btn:hover {
+          background: #fef2f2;
+        }
+
+        :global(.dark) .edit-btn {
+          border-color: rgba(255, 255, 255, 0.1);
+          color: rgba(255, 255, 255, 0.6);
+        }
+        
+        :global(.dark) .edit-btn:hover {
+          background: rgba(255, 255, 255, 0.05);
+          color: white;
+        }
+
+        :global(.dark) .delete-btn {
+          border-color: rgba(239, 68, 68, 0.2);
+        }
+
+        :global(.dark) .delete-btn:hover {
+          background: rgba(239, 68, 68, 0.1);
+        }
+
+        :global(.dark) .role-dropdown-toggle {
+          background: rgba(255, 255, 255, 0.05) !important;
+          border-color: rgba(255, 255, 255, 0.1) !important;
+          --dropdown-text: white;
+          --dropdown-placeholder: rgba(255, 255, 255, 0.4);
+        }
+
+        :global(.dark) .role-dropdown-menu {
+          background: #2a2a2e !important;
+          border-color: rgba(255, 255, 255, 0.1) !important;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.4) !important;
+        }
+
+        :global(.dark) .sub-modal input {
+          background: rgba(255, 255, 255, 0.05) !important;
+          border-color: rgba(255, 255, 255, 0.1) !important;
+          color: white !important;
+        }
+
+        :global(.dark) .sub-modal label {
+          color: rgba(255, 255, 255, 0.8) !important;
+        }
+
         .sub-modal-header {
           display: flex;
           justify-content: space-between;
@@ -925,6 +1116,55 @@ function TeamStep({ invitedMembers, setInvitedMembers, connectedApps }) {
         .role-item-hover:hover {
           background: #f8fafc !important;
         }
+        :global(.dark) .role-item-hover:hover {
+          background: rgba(255, 255, 255, 0.05) !important;
+        }
+        .role-item {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 8px 12px;
+          cursor: pointer;
+          border-radius: 6px;
+          transition: all 0.1s;
+          background: transparent;
+        }
+
+        .role-item-name {
+          font-size: 14px;
+          font-weight: 400;
+          color: #334155;
+        }
+
+        .role-item.selected {
+          background: #fff7ed;
+        }
+
+        .role-item.selected .role-item-name {
+          font-weight: 600;
+          color: #c2410c;
+        }
+
+        .role-item:not(.selected):hover {
+          background: #f8fafc;
+        }
+
+        :global(.dark) .role-item-name {
+          color: rgba(255, 255, 255, 0.7);
+        }
+
+        :global(.dark) .role-item.selected {
+          background: rgba(184, 132, 42, 0.15);
+        }
+
+        :global(.dark) .role-item.selected .role-item-name {
+          color: var(--gold-light);
+        }
+
+        :global(.dark) .role-item:not(.selected):hover {
+          background: rgba(255, 255, 255, 0.05);
+        }
+
         @keyframes slideUp {
           from { transform: translateY(10px); opacity: 0; }
           to { transform: translateY(0); opacity: 1; }
