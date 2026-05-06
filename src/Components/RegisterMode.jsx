@@ -31,11 +31,29 @@ export default function RegisterMode({ isOpen, onClose, onSwitchToLogin, onRegis
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Registration attempt:", formData);
-    // Trigger successful registration flow
-    onRegisterSuccess();
+    
+    try {
+      const response = await fetch('/api/auth/Register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("Registration successful:", result);
+        onRegisterSuccess();
+      } else {
+        alert(result.error || "Registration failed");
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      alert("Something went wrong. Please try again.");
+    }
   };
 
   if (!isMounted || !isOpen) return null;

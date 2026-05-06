@@ -25,8 +25,19 @@ export default function OnboardingModal({ open, setOpen }) {
   const [connectedApps, setConnectedApps] = useState([]);
   const [isPlanConfirmed, setIsPlanConfirmed] = useState(false);
   const [pendingToast, setPendingToast] = useState(null);
+  const [onboardingId, setOnboardingId] = useState(null);
+
+  useEffect(() => {
+    // Generate a unique ID if not present
+    let id = localStorage.getItem("temp_onboarding_id");
+    if (!id) {
+       id = crypto.randomUUID();
+       localStorage.setItem("temp_onboarding_id", id);
+    }
+    setOnboardingId(id);
+  }, []);
   
-  const saveState = () => {
+  const saveState = async () => {
     const stateData = {
       step,
       selectedGoals,
@@ -34,12 +45,40 @@ export default function OnboardingModal({ open, setOpen }) {
       connectedApps,
       selectedPlan
     };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(stateData));
+    
+    try {
+      await fetch('/api/onboarding/state', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: onboardingId, data: stateData })
+      });
+    } catch (e) {
+      console.error("Failed to save state to Redis:", e);
+    }
+  };
+
+  const persistToDB = async (type, data) => {
+    try {
+      await fetch('/api/onboarding/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type, data })
+      });
+    } catch (e) {
+      console.error(`Failed to persist ${type} to DB:`, e);
+    }
   };
 
   const progress = ((step + 1) / steps.length) * 100;
 
-  const next = () => {
+  const next = async () => {
+    // Persist data before moving to next step
+    if (step === 1) {
+      await persistToDB("apps", { apps: connectedApps });
+    } else if (step === 2) {
+      await persistToDB("team", { members: invitedMembers });
+    }
+
     if (step === steps.length - 1) {
       if (!selectedPlan) {
         toast.warn("Please select a plan to proceed", { autoClose: 2000 });
@@ -70,6 +109,9 @@ export default function OnboardingModal({ open, setOpen }) {
         return;
       }
 
+      // Final save for plan
+      await persistToDB("plan", { plan: selectedPlan });
+
       const message = selectedPlan === "Basic" 
         ? "Onboarding completed successfully!" 
         : `Successfully subscribed to the ${selectedPlan} Plan!`;
@@ -95,48 +137,44 @@ export default function OnboardingModal({ open, setOpen }) {
     // Check for restoration after OAuth redirect
     const params = new URLSearchParams(window.location.search);
     if (params.get("onboarding") === "zoho_success") {
-      const savedState = localStorage.getItem(STORAGE_KEY);
-      if (savedState) {
-        try {
-          const { 
-            step: savedStep, 
-            selectedGoals: savedGoals, 
-            invitedMembers: savedMembers, 
-            connectedApps: savedApps, 
-            selectedPlan: savedPlan 
-          } = JSON.parse(savedState);
-          
-          setStep(savedStep || 1);
-          setSelectedGoals(savedGoals || []);
-          setInvitedMembers(savedMembers || []);
-          setSelectedPlan(savedPlan || "");
-          
-          // Add the newly connected app(s)
-          const newApp = params.get("app");
-          if (newApp === "all") {
-             setConnectedApps(["Zoho CRM", "Zoho Books", "Zoho Desk", "Zoho Projects"]);
-          } else if (newApp && !savedApps.includes(newApp)) {
-            setConnectedApps([...(savedApps || []), newApp]);
-          } else {
-            setConnectedApps(savedApps || []);
-          }
+      const sid = params.get("sid");
+      if (sid) {
+        fetch(`/api/onboarding/state?id=${sid}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.error) throw new Error(data.error);
+            
+            setStep(data.step || 1);
+            setSelectedGoals(data.selectedGoals || []);
+            setInvitedMembers(data.invitedMembers || []);
+            setSelectedPlan(data.selectedPlan || "");
+            
+            const savedApps = data.connectedApps || [];
+            
+            // Add the newly connected app(s)
+            const newApp = params.get("app");
+            if (newApp === "all") {
+               setConnectedApps(["Zoho CRM", "Zoho Books", "Zoho Desk", "Zoho Projects"]);
+            } else if (newApp && !savedApps.includes(newApp)) {
+              setConnectedApps([...savedApps, newApp]);
+            } else {
+              setConnectedApps(savedApps);
+            }
 
-          setOpen(true);
-
-          // Store the success message to show once the modal is open & ToastContainer is mounted
-          const appParam = params.get("app");
-          const successMsg = appParam === "all"
-            ? "Successfully connected all Zoho apps!"
-            : `Successfully connected ${appParam}!`;
-          setPendingToast(successMsg);
-          
-          // Cleanup
-          localStorage.removeItem(STORAGE_KEY);
-          const newUrl = window.location.pathname;
-          window.history.replaceState({}, document.title, newUrl);
-        } catch (e) {
-          console.error("Failed to restore onboarding state:", e);
-        }
+            setOpen(true);
+            const appParam = params.get("app");
+            const successMsg = appParam === "all"
+              ? "Successfully connected all Zoho apps!"
+              : `Successfully connected ${appParam}!`;
+            setPendingToast(successMsg);
+          })
+          .catch(e => {
+            console.error("Failed to restore onboarding state from Redis:", e);
+          })
+          .finally(() => {
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+          });
       }
     }
   }, [setOpen]);
@@ -199,6 +237,7 @@ export default function OnboardingModal({ open, setOpen }) {
               connectedApps={connectedApps} 
               setConnectedApps={setConnectedApps}
               saveState={saveState}
+              onboardingId={onboardingId}
               step={step}
               selectedGoals={selectedGoals}
               invitedMembers={invitedMembers}
@@ -210,6 +249,7 @@ export default function OnboardingModal({ open, setOpen }) {
               invitedMembers={invitedMembers} 
               setInvitedMembers={setInvitedMembers} 
               connectedApps={connectedApps}
+              persistToDB={persistToDB}
             />
           )}
 
@@ -676,6 +716,7 @@ function IntegrationsStep({
   connectedApps, 
   setConnectedApps, 
   saveState, 
+  onboardingId,
   step, 
   selectedGoals, 
   invitedMembers, 
@@ -701,7 +742,7 @@ function IntegrationsStep({
       return;
     }
 
-    const oauthUrl = `https://accounts.zoho.in/oauth/v2/auth?scope=${app.scope}&client_id=${clientId}&response_type=code&access_type=offline&redirect_uri=${redirectUri}&state=${encodeURIComponent(app.name)}`;
+    const oauthUrl = `https://accounts.zoho.in/oauth/v2/auth?scope=${app.scope}&client_id=${clientId}&response_type=code&access_type=offline&redirect_uri=${redirectUri}&state=${encodeURIComponent(app.name + ":" + onboardingId)}`;
     
     toast.info(`Redirecting to Zoho to connect ${app.name}...`, { autoClose: 2000 });
     
@@ -725,7 +766,7 @@ function IntegrationsStep({
       return;
     }
 
-    const oauthUrl = `https://accounts.zoho.in/oauth/v2/auth?scope=${allScopes}&client_id=${clientId}&response_type=code&access_type=offline&redirect_uri=${redirectUri}&state=all`;
+    const oauthUrl = `https://accounts.zoho.in/oauth/v2/auth?scope=${allScopes}&client_id=${clientId}&response_type=code&access_type=offline&redirect_uri=${redirectUri}&state=${encodeURIComponent("all:" + onboardingId)}`;
     
     toast.info("Redirecting to Zoho to connect all apps...", { autoClose: 2000 });
     
@@ -778,17 +819,17 @@ function IntegrationsStep({
   );
 }
 
-function TeamStep({ invitedMembers, setInvitedMembers, connectedApps }) {
+function TeamStep({ invitedMembers, setInvitedMembers, connectedApps, persistToDB }) {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [email, setEmail] = useState("");
-  const [selectedRoles, setSelectedRoles] = useState([]);
+  const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [editingIndex, setEditingIndex] = useState(null);
 
   const availableRoles = connectedApps.length > 0 ? connectedApps : [];
 
-  const toggleRole = (role) => {
-    setSelectedRoles(prev => 
+  const togglePermission = (role) => {
+    setSelectedPermissions(prev => 
       prev.includes(role) ? prev.filter(r => r !== role) : [...prev, role]
     );
   };
@@ -799,8 +840,13 @@ function TeamStep({ invitedMembers, setInvitedMembers, connectedApps }) {
       if (editingIndex !== null) {
         // Handle Edit
         const updated = [...invitedMembers];
-        updated[editingIndex] = { email, roles: selectedRoles };
+        const updatedMember = { email, permissions: selectedPermissions };
+        updated[editingIndex] = updatedMember;
         setInvitedMembers(updated);
+        
+        // Update in DB (appends/updates)
+        persistToDB("team", { members: [updatedMember] });
+        
         toast.success(`Updated access for ${email}`);
       } else {
         // Handle New Invite
@@ -808,7 +854,12 @@ function TeamStep({ invitedMembers, setInvitedMembers, connectedApps }) {
           toast.error("User already invited");
           return;
         }
-        setInvitedMembers([...invitedMembers, { email, roles: selectedRoles }]);
+        const newMember = { email, permissions: selectedPermissions };
+        setInvitedMembers([...invitedMembers, newMember]);
+        
+        // Trigger immediate invitation email via API
+        persistToDB("team", { members: [newMember] });
+        
         toast.success(`Invitation sent to ${email}`, {
           position: "bottom-right",
           autoClose: 3000,
@@ -823,7 +874,7 @@ function TeamStep({ invitedMembers, setInvitedMembers, connectedApps }) {
 
   const resetForm = () => {
     setEmail("");
-    setSelectedRoles([]);
+    setSelectedPermissions([]);
     setEditingIndex(null);
     setShowInviteModal(false);
     setDropdownOpen(false);
@@ -832,7 +883,7 @@ function TeamStep({ invitedMembers, setInvitedMembers, connectedApps }) {
   const openEdit = (index) => {
     setEditingIndex(index);
     setEmail(invitedMembers[index].email);
-    setSelectedRoles(invitedMembers[index].roles);
+    setSelectedPermissions(invitedMembers[index].permissions);
     setShowInviteModal(true);
   };
 
@@ -935,7 +986,7 @@ function TeamStep({ invitedMembers, setInvitedMembers, connectedApps }) {
                     </span>
                   </div>
                   <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-                    {member.roles.length > 0 ? member.roles.map(role => (
+                    {member.permissions.length > 0 ? member.permissions.map(role => (
                       <span key={role} className="role-tag">
                         {role}
                       </span>
@@ -1010,12 +1061,12 @@ function TeamStep({ invitedMembers, setInvitedMembers, connectedApps }) {
                     justifyContent: "space-between",
                     alignItems: "center",
                     fontSize: "14px",
-                    color: selectedRoles.length > 0 ? "var(--dropdown-text, #111)" : "var(--dropdown-placeholder, #94a3b8)"
+                    color: selectedPermissions.length > 0 ? "var(--dropdown-text, #111)" : "var(--dropdown-placeholder, #94a3b8)"
                   }}
                 >
                   <span>
-                    {selectedRoles.length > 0 
-                      ? selectedRoles.join(", ") 
+                    {selectedPermissions.length > 0 
+                      ? selectedPermissions.join(", ") 
                       : "Choose ZOHO Apps..."}
                   </span>
                   <svg 
@@ -1044,12 +1095,12 @@ function TeamStep({ invitedMembers, setInvitedMembers, connectedApps }) {
                       availableRoles.map(role => (
                         <div 
                           key={role}
-                          onClick={() => toggleRole(role)}
-                          className={`role-item ${selectedRoles.includes(role) ? "selected" : ""}`}
+                          onClick={() => togglePermission(role)}
+                          className={`role-item ${selectedPermissions.includes(role) ? "selected" : ""}`}
                         >
                           <input 
                             type="checkbox" 
-                            checked={selectedRoles.includes(role)}
+                            checked={selectedPermissions.includes(role)}
                             readOnly
                             style={{ cursor: "pointer" }}
                           />

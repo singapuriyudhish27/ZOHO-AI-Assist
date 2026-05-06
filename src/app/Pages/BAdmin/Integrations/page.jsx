@@ -1,8 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import BAdminSidebar from "@/Components/BAdmin_Sidebar";
+import NewIntegrationModal from "@/Components/NewIntegrationModal";
 
 export default function Integrations() {
+    const [activeTab, setActiveTab] = useState("zoho");
+    const [isNewModalOpen, setIsNewModalOpen] = useState(false);
+
     const zohoApps = [
         { id: 1, name: "Zoho CRM", sub: "Sales pipeline & contacts", icon: "🤝", connected: true, lastSync: "2 mins ago" },
         { id: 2, name: "Zoho Books", sub: "Invoices, revenue & expenses", icon: "📚", connected: true, lastSync: "5 mins ago" },
@@ -38,71 +42,127 @@ export default function Integrations() {
                     </button>
                 </div>
 
+                {/* Tab Switcher - Visual Update: Underline Style */}
+                <div className="tabs-container">
+                    <div className="tabs-list">
+                        <button 
+                            className={`tab-item ${activeTab === 'zoho' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('zoho')}
+                        >
+                            <svg className="tab-icon" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                            </svg>
+                            Zoho Apps
+                        </button>
+                        <button 
+                            className={`tab-item ${activeTab === 'others' ? 'active' : ''}`}
+                            onClick={() => setActiveTab('others')}
+                        >
+                            <svg className="tab-icon" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                            </svg>
+                            Other Integrations
+                        </button>
+                    </div>
+                </div>
+
                 {/* Zoho Suite Ecosystem */}
-                <section className="integration-section">
-                    <div className="section-header">
-                        <h2 className="section-title">Zoho Suite Ecosystem</h2>
-                        <span className="badge-count">6 connected</span>
-                    </div>
-
-                    <div className="integration-grid">
-                        {zohoApps.map(app => (
-                            <div key={app.id} className={`integration-card ${app.connected ? 'active' : 'inactive'}`}>
-                                <div className="card-top">
-                                    <div className="app-icon-wrapper">{app.icon}</div>
-                                    <label className="toggle-switch">
-                                        <input type="checkbox" defaultChecked={app.connected} />
-                                        <span className="slider"></span>
-                                    </label>
-                                </div>
-                                
-                                <div className="app-info">
-                                    <h3 className="app-name">{app.name}</h3>
-                                    <p className="app-sub">{app.sub}</p>
-                                </div>
-
-                                <div className="card-footer border-top">
-                                    {app.connected ? (
-                                        <div className="sync-status">
-                                            <span className="sync-dot green"></span>
-                                            Last synced: {app.lastSync}
-                                        </div>
-                                    ) : (
-                                        <div className="sync-status text-slate">
-                                            Not Connected
-                                        </div>
-                                    )}
-                                    <button className="icon-btn text-charcoal" title="Configure Field Mapping">
-                                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                    </button>
-                                </div>
+                {activeTab === 'zoho' && (
+                    <div className="fade-in">
+                        <section className="integration-section">
+                            <div className="section-header">
+                                <h2 className="section-title">Zoho Suite Ecosystem</h2>
+                                <span className="badge-count">
+                                    {zohoApps.filter(a => a.connected).length} connected
+                                </span>
                             </div>
-                        ))}
-                    </div>
-                </section>
 
-                {/* Third-Party Coming Soon */}
-                <section className="integration-section margin-top">
-                    <div className="section-header">
-                        <h2 className="section-title text-slate">Third-Party Integrations <span className="coming-soon-badge">Coming Soon</span></h2>
-                    </div>
-
-                    <div className="integration-grid">
-                        {thirdPartyApps.map(app => (
-                            <div key={app.id} className="integration-card upcoming">
-                                <div className="card-top">
-                                    <div className="app-icon-wrapper monochrome">{app.icon}</div>
-                                    <button className="notify-btn">Notify Me</button>
-                                </div>
-                                
-                                <div className="app-info">
-                                    <h3 className="app-name">{app.name}</h3>
-                                    <p className="app-sub">{app.sub}</p>
-                                </div>
+                            <div className="integration-grid">
+                                {zohoApps.filter(app => app.connected).map(app => (
+                                    <div key={app.id} className="integration-card active">
+                                        <div className="card-top">
+                                            <div className="app-icon-wrapper">{app.icon}</div>
+                                            <div className="card-actions">
+                                                <button className="icon-btn text-charcoal" title="Configure Field Mapping">
+                                                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                                </button>
+                                                <button className="action-btn btn-disconnect">Disconnect</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="app-info">
+                                            <h3 className="app-name">{app.name}</h3>
+                                            <p className="app-sub">{app.sub}</p>
+                                            
+                                            <div className="sync-info">
+                                                <span className="sync-status compact">
+                                                    <span className="sync-dot green"></span>
+                                                    {app.lastSync}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
+                        </section>
+
+                        <section className="integration-section margin-top">
+                            <div className="section-header">
+                                <h2 className="section-title text-slate">Disconnected ZOHO Apps</h2>
+                                <p className="section-subtitle">Apps available in your ZOHO subscription</p>
+                            </div>
+
+                            <div className="integration-grid">
+                                {zohoApps.filter(app => !app.connected).map(app => (
+                                    <div key={app.id} className="integration-card inactive">
+                                        <div className="card-top">
+                                            <div className="app-icon-wrapper monochrome">{app.icon}</div>
+                                            <div className="card-actions">
+                                                <button className="action-btn btn-connect">Connect</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="app-info">
+                                            <h3 className="app-name">{app.name}</h3>
+                                            <p className="app-sub">{app.sub}</p>
+                                            <div className="sync-info">
+                                                <span className="sync-status compact text-slate">Not Connected</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
                     </div>
-                </section>
+                )}
+
+                {activeTab === 'others' && (
+                    <section className="integration-section margin-top fade-in">
+                        <div className="section-header space-between">
+                            <h2 className="section-title text-slate">Third-Party Integrations <span className="coming-soon-badge">Coming Soon</span></h2>
+                            <button className="secondary-action-btn" onClick={() => setIsNewModalOpen(true)}>
+                                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"/></svg>
+                                New Integration
+                            </button>
+                        </div>
+
+                        <div className="integration-grid">
+                            {thirdPartyApps.map(app => (
+                                <div key={app.id} className="integration-card upcoming">
+                                    <div className="card-top">
+                                        <div className="app-icon-wrapper monochrome">{app.icon}</div>
+                                        <button className="action-btn btn-connect coming-soon">Connect</button>
+                                    </div>
+                                    
+                                    <div className="app-info">
+                                        <h3 className="app-name">{app.name}</h3>
+                                        <p className="app-sub">{app.sub}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                )}
 
             </main>
 
@@ -120,7 +180,7 @@ export default function Integrations() {
                     --bg-page: #121214;
                     --bg-card: #1E1E22;
                     --text-main: #FFFFFF;
-                    --text-sub: rgba(255,255,255,0.5);
+                    --text-sub: rgba(255,255,255,0.4);
                     --border-main: rgba(255,255,255,0.08);
                     --int-shadow: 0 10px 40px rgba(0,0,0,0.3);
                 }
@@ -140,6 +200,12 @@ export default function Integrations() {
                     display: flex;
                     flex-direction: column;
                     gap: 32px;
+                }
+
+                .page-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
                 }
 
                 .page-title {
@@ -180,6 +246,88 @@ export default function Integrations() {
                     filter: brightness(1.1);
                 }
 
+                .secondary-action-btn {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    padding: 8px 16px;
+                    background: transparent;
+                    color: var(--gold);
+                    border: 1px solid var(--gold);
+                    border-radius: 8px;
+                    font-family: inherit;
+                    font-weight: 600;
+                    font-size: 13px;
+                    cursor: pointer;
+                    transition: all 0.2s;
+                }
+
+                .secondary-action-btn:hover {
+                    background: var(--gold);
+                    color: white;
+                    box-shadow: 0 4px 12px rgba(184, 132, 42, 0.2);
+                }
+
+                /* Visual Update: Underline Tabs */
+                .tabs-container {
+                    border-bottom: 1px solid var(--border-main);
+                    margin-bottom: 16px;
+                }
+
+                .tabs-list {
+                    display: flex;
+                    gap: 40px;
+                }
+
+                .tab-item {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    padding: 12px 0;
+                    background: transparent;
+                    border: none;
+                    color: var(--text-sub);
+                    font-size: 16px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    position: relative;
+                    transition: all 0.2s;
+                    border-bottom: 2px solid transparent;
+                }
+
+                .tab-item:hover {
+                    color: var(--text-main);
+                }
+
+                .tab-item.active {
+                    color: var(--gold);
+                    border-bottom-color: var(--gold);
+                }
+
+                :global(.dark) .tab-item.active {
+                    color: var(--gold);
+                    border-bottom-color: var(--gold);
+                }
+
+                .tab-icon {
+                    opacity: 0.7;
+                    transition: all 0.2s;
+                }
+
+                .tab-item.active .tab-icon {
+                    opacity: 1;
+                    color: var(--gold);
+                }
+
+                .fade-in {
+                    animation: fadeIn 0.4s ease-out;
+                }
+
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+
                 .integration-section {
                     display: flex;
                     flex-direction: column;
@@ -194,6 +342,10 @@ export default function Integrations() {
                     display: flex;
                     align-items: center;
                     gap: 12px;
+                }
+
+                .section-header.space-between {
+                    justify-content: space-between;
                 }
 
                 .section-title {
@@ -229,19 +381,19 @@ export default function Integrations() {
 
                 .integration-grid {
                     display: grid;
-                    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-                    gap: 24px;
+                    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                    gap: 16px;
                 }
 
                 .integration-card {
                     background: var(--bg-card);
                     border: 1px solid var(--border-main);
                     border-radius: 12px;
-                    padding: 24px;
+                    padding: 16px;
                     box-shadow: var(--int-shadow);
                     display: flex;
                     flex-direction: column;
-                    gap: 16px;
+                    gap: 12px;
                     transition: all 0.3s;
                 }
 
@@ -249,10 +401,14 @@ export default function Integrations() {
                     border-color: rgba(16, 185, 129, 0.3);
                 }
 
-                .integration-card.active:hover {
+                .integration-card.active:hover,
+                .integration-card.inactive:hover,
+                .integration-card.upcoming:hover {
                     transform: translateY(-2px);
                     box-shadow: 0 12px 40px rgba(16, 185, 129, 0.1);
                     border-color: #10B981;
+                    opacity: 1;
+                    border-style: solid; /* Ensure dashed border becomes solid on hover if it was upcoming */
                 }
 
                 .integration-card.inactive {
@@ -272,16 +428,22 @@ export default function Integrations() {
                     align-items: center;
                 }
 
+                .card-actions {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+
                 .app-icon-wrapper {
-                    width: 44px;
-                    height: 44px;
+                    width: 36px;
+                    height: 36px;
                     background: var(--bg-page);
                     border: 1px solid var(--border-main);
-                    border-radius: 10px;
+                    border-radius: 8px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 20px;
+                    font-size: 16px;
                     transition: all 0.2s;
                 }
 
@@ -290,54 +452,50 @@ export default function Integrations() {
                     opacity: 0.7;
                 }
 
-                .toggle-switch {
-                    position: relative;
-                    display: inline-block;
-                    width: 40px;
-                    height: 22px;
-                }
-
-                .toggle-switch input { opacity: 0; width: 0; height: 0; }
-
-                .slider {
-                    position: absolute;
-                    cursor: pointer;
-                    top: 0; left: 0; right: 0; bottom: 0;
-                    background-color: var(--bg-page);
-                    transition: .3s;
-                    border-radius: 22px;
-                    border: 1px solid var(--border-main);
-                }
-
-                .slider:before {
-                    position: absolute;
-                    content: "";
-                    height: 14px;
-                    width: 14px;
-                    left: 3px;
-                    bottom: 3px;
-                    background-color: var(--text-sub);
-                    transition: .3s;
-                    border-radius: 50%;
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                }
-
-                input:checked + .slider { background-color: #10B981; border-color: #10B981; }
-                input:checked + .slider:before { transform: translateX(18px); background-color: white; }
-
-                .notify-btn {
-                    background: transparent;
-                    border: 1px solid var(--border-main);
-                    padding: 4px 12px;
-                    border-radius: 12px;
+                .action-btn {
+                    padding: 6px 12px;
+                    border-radius: 8px;
                     font-size: 11px;
-                    font-weight: 500;
-                    color: var(--text-sub);
+                    font-weight: 600;
                     cursor: pointer;
                     transition: all 0.2s;
+                    border: 1px solid transparent;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
                 }
 
-                .notify-btn:hover { background: var(--bg-page); color: var(--text-main); }
+                .btn-connect {
+                    background: var(--gold);
+                    color: white;
+                    box-shadow: 0 4px 12px rgba(184, 132, 42, 0.2);
+                }
+
+                .btn-connect:hover {
+                    transform: translateY(-1px);
+                    filter: brightness(1.1);
+                    box-shadow: 0 6px 16px rgba(184, 132, 42, 0.4);
+                }
+
+                .btn-connect.coming-soon {
+                    background: var(--bg-page);
+                    border-color: var(--border-main);
+                    color: var(--text-sub);
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                    box-shadow: none;
+                }
+
+                .btn-disconnect {
+                    background: transparent;
+                    border-color: var(--border-main);
+                    color: var(--text-sub);
+                }
+
+                .btn-disconnect:hover {
+                    border-color: #EF4444;
+                    color: #EF4444;
+                    background: rgba(239, 68, 68, 0.05);
+                }
 
                 .app-info {
                     display: flex;
@@ -367,13 +525,18 @@ export default function Integrations() {
                     border-top: 1px solid var(--border-main);
                 }
 
-                .sync-status {
+                .sync-info {
+                    margin-top: 4px;
+                }
+
+                .sync-status.compact {
                     display: flex;
                     align-items: center;
                     gap: 6px;
-                    font-size: 11px;
+                    font-size: 10px;
                     color: var(--text-sub);
                     font-weight: 500;
+                    opacity: 0.8;
                 }
 
                 .sync-dot.green {
@@ -400,6 +563,11 @@ export default function Integrations() {
                 .icon-btn.text-charcoal { color: var(--text-sub); }
                 .icon-btn.text-charcoal:hover { color: var(--text-main); }
             `}</style>
+
+            <NewIntegrationModal
+                isOpen={isNewModalOpen}
+                onClose={() => setIsNewModalOpen(false)}
+            />
         </div>
     );
 }

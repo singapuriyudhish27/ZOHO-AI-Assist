@@ -52,8 +52,11 @@ export async function GET(request) {
     // const cookieStore = cookies();
     // cookieStore.set('zoho_tokens', JSON.stringify(data), { httpOnly: true, secure: true });
 
-    // Redirect back to the onboarding with success and app context
-    return NextResponse.redirect(new URL(`/?onboarding=zoho_success&app=${state || 'unknown'}`, request.url));
+    // Parse state (format: "appName:onboardingId")
+    const [appName, sid] = (state || "").split(":");
+
+    // Redirect back to the onboarding with success, app context, and session ID
+    return NextResponse.redirect(new URL(`/?onboarding=zoho_success&app=${appName || 'unknown'}&sid=${sid || ''}`, request.url));
   } catch (err) {
     console.error('Callback Route Error:', err);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

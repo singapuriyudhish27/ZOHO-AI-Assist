@@ -126,7 +126,7 @@ export default function Subscriptions() {
                                 <select className="small-select">
                                     <option>USD ($)</option>
                                     <option>EUR (€)</option>
-                                    <option>GBP (£)</option>
+                                    <option>INR (₹)</option>
                                 </select>
                             </div>
                             <div className="logic-row">

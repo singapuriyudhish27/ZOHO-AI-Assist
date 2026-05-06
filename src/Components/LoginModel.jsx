@@ -1,17 +1,22 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginModel({ isOpen, onClose, onSwitchToRegister, onSwitchToForgot, onLoginSuccess }) {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     setIsMounted(true);
     if (isOpen) {
       document.body.style.overflow = "hidden";
+      setError("");
     } else {
       document.body.style.overflow = "unset";
     }
@@ -20,10 +25,47 @@ export default function LoginModel({ isOpen, onClose, onSwitchToRegister, onSwit
     };
   }, [isOpen]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Login attempt:", { email, password });
-    onLoginSuccess();
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/auth/Login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        onLoginSuccess();
+        
+        // Role-based Redirection
+        switch (result.role) {
+          case "super_admin":
+            router.push("/Pages/SAdmin");
+            break;
+          case "admin":
+            router.push("/Pages/BAdmin");
+            break;
+          case "member":
+            router.push("/Pages");
+            break;
+          default:
+            router.push("/");
+            break;
+        }
+      } else {
+        setError(result.error || "Login failed. Please check your credentials.");
+      }
+    } catch (err) {
+      console.error("Login Error:", err);
+      setError("An unexpected error occurred. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (!isMounted || !isOpen) return null;
@@ -113,8 +155,21 @@ export default function LoginModel({ isOpen, onClose, onSwitchToRegister, onSwit
               </button>
             </div>
 
-            <button type="submit" className="btn-gold auth-submit">
-              Sign In
+            {error && (
+              <div className="error-message">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{error}</span>
+              </div>
+            )}
+
+            <button type="submit" className="btn-gold auth-submit" disabled={loading}>
+              {loading ? (
+                <div className="button-spinner"></div>
+              ) : (
+                "Sign In"
+              )}
             </button>
           </form>
 
@@ -441,6 +496,45 @@ export default function LoginModel({ isOpen, onClose, onSwitchToRegister, onSwit
           border: solid white;
           border-width: 0 2px 2px 0;
           transform: rotate(45deg);
+        }
+
+        .error-message {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          background: rgba(239, 68, 68, 0.1);
+          border: 1px solid rgba(239, 68, 68, 0.2);
+          color: #ef4444;
+          padding: 12px;
+          border-radius: 12px;
+          font-size: 13px;
+          animation: shake 0.4s ease-in-out;
+        }
+
+        .error-message svg {
+          width: 18px;
+          height: 18px;
+          flex-shrink: 0;
+        }
+
+        .button-spinner {
+          width: 20px;
+          height: 20px;
+          border: 2px solid rgba(255, 255, 255, 0.3);
+          border-top-color: white;
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+          margin: 0 auto;
+        }
+
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-4px); }
+          75% { transform: translateX(4px); }
+        }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
         }
 
         @keyframes fadeIn {

@@ -8,6 +8,7 @@ import RegisterMode from "@/Components/RegisterMode";
 import LoginModel from "@/Components/LoginModel";
 import ForgotPasswordModel from "@/Components/ForgotPasswordModel";
 import OnboardingModal from "@/Components/OnBoardingMode";
+import InvitationModal from "@/Components/InvitationModal";
 
 export default function LandingPage() {
   const [scrolled, setScrolled] = useState(false);
@@ -21,19 +22,27 @@ export default function LandingPage() {
   const [isForgotModalOpen, setIsForgotModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isOnboardingModalOpen, setIsOnboardingModalOpen] = useState(false);
+  const [isInvitationModalOpen, setIsInvitationModalOpen] = useState(false);
+  const [inviteToken, setInviteToken] = useState("");
   const searchParams = useSearchParams();
 
-  useEffect(() => {
-    if (isLoggedIn) {
-      setIsOnboardingModalOpen(true);
-    }
-  }, [isLoggedIn]);
 
   useEffect(() => {
     setMounted(true);
     // Check for signup trigger from other pages
     if (searchParams.get("signup") === "true") {
       setIsRegisterModalOpen(true);
+    }
+
+    // Check for invitation token
+    const token = searchParams.get("invite_token");
+    if (token) {
+      setInviteToken(token);
+      setIsInvitationModalOpen(true);
+      
+      // Clean up the URL
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
     }
   }, [searchParams]);
 
@@ -778,6 +787,7 @@ export default function LandingPage() {
         onRegisterSuccess={() => {
           setIsRegisterModalOpen(false);
           setIsLoggedIn(true);
+          setIsOnboardingModalOpen(true);
         }}
       />
 
@@ -810,6 +820,17 @@ export default function LandingPage() {
       <OnboardingModal 
         open={isOnboardingModalOpen} 
         setOpen={setIsOnboardingModalOpen} 
+      />
+
+      <InvitationModal
+        isOpen={isInvitationModalOpen}
+        onClose={() => setIsInvitationModalOpen(false)}
+        token={inviteToken}
+        onSetupSuccess={() => {
+          setIsInvitationModalOpen(false);
+          // Redirect to a specific path or show login? 
+          // The current InvitationModal already shows success.
+        }}
       />
     </>
   );
