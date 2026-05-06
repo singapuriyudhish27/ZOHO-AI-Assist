@@ -142,7 +142,7 @@ function LandingPageContent() {
           <div className="hero-inner fade-up">
             <div className="hero-badge">Now supporting all 20+ Zoho applications</div>
             <h1 className="hero-title">
-              The <em>Intelligent & Smart AI Based System</em>
+              The <em>Intelligent</em>
               <br />
               for your entire
               <br />
