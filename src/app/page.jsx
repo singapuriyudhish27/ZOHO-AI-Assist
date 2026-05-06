@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useTheme } from "@/Components/ThemeProvider";
@@ -10,7 +10,7 @@ import ForgotPasswordModel from "@/Components/ForgotPasswordModel";
 import OnboardingModal from "@/Components/OnBoardingMode";
 import InvitationModal from "@/Components/InvitationModal";
 
-export default function LandingPage() {
+function LandingPageContent() {
   const [scrolled, setScrolled] = useState(false);
   const [typingFinished, setTypingFinished] = useState(false);
   const [typingText, setTypingText] = useState("");
@@ -833,5 +833,17 @@ export default function LandingPage() {
         }}
       />
     </>
+  );
+}
+
+export default function LandingPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-[#050505]">
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    }>
+      <LandingPageContent />
+    </Suspense>
   );
 }
